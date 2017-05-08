@@ -17,7 +17,7 @@ class OplogWatcher(object):
             self._ns_filter = None
 
         self.poll_time = poll_time
-        self.connection = connection or pymongo.Connection()
+        self.connection = connection or pymongo.MongoClient()
 
         if start_now:
             self.start()
@@ -44,7 +44,7 @@ class OplogWatcher(object):
                 filter = {'ns': self._ns_filter}
             filter['ts'] = {'$gt': ts}
             try:
-                cursor = oplog.find(filter, tailable=True)
+                cursor = oplog.find(filter)
                 while True:
                     for op in cursor:
                         ts = op['ts']
